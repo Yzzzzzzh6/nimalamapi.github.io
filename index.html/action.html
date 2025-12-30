@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们在行动 - 给它一个家，让爱终止流浪</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #D2691E;
+            --secondary-color: #8B4513;
+            --accent-color: #228B22;
+            --neutral-color: #F5F5DC;
+            --text-color: #2F2F2F;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-color) 0%, #FFF8DC 100%);
+            color: var(--text-color);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 245, 220, 0.95);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(210, 105, 30, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .action-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(210, 105, 30, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% - 1rem);
+            background: linear-gradient(to bottom, var(--primary-color), transparent);
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .volunteer-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .volunteer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(210, 105, 30, 0.1);
+        }
+        
+        .partner-logo {
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+        
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 navbar-blur border-b border-orange-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">爱犬救助</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-orange-600 transition-colors">首页</a>
+                    <a href="adoption.html" class="text-gray-700 hover:text-orange-600 transition-colors">爱心领养</a>
+                    <a href="action.html" class="text-orange-600 font-medium hover:text-orange-700 transition-colors">我们在行动</a>
+                    <a href="abandonment.html" class="text-gray-700 hover:text-orange-600 transition-colors">弃养图记</a>
+                    <a href="forum.html" class="text-gray-700 hover:text-orange-600 transition-colors">论坛问答</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn-primary text-white px-6 py-2 rounded-full font-medium" onclick="showVolunteerForm()">
+                        成为志愿者
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="hero-title text-5xl font-bold mb-6">我们在行动</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    汇聚每一份爱心，汇聚每一份力量。从个人志愿者到政府部门，
+                    从社区行动到政策支持，我们共同为流浪狗救助事业努力奋斗。
+                </p>
+                
+                <div class="grid md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-3xl font-bold text-orange-600" id="active-events">28</div>
+                        <div class="text-sm text-gray-600">进行中的活动</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-green-600" id="volunteer-hours">15,680</div>
+                        <div class="text-sm text-gray-600">志愿时长(小时)</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-blue-600" id="partner-orgs">45</div>
+                        <div class="text-sm text-gray-600">合作机构</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-purple-600" id="community-events">156</div>
+                        <div class="text-sm text-gray-600">社区活动</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Current Activities -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">当前活动</h2>
+                <p class="text-xl text-gray-600">立即参与，为流浪狗救助贡献力量</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="action-card rounded-2xl overflow-hidden">
+                    <img src="https://kimi-web-img.moonshot.cn/img/animalsmatter.com/f8fef5341f5087fe94ca880090e49dd6e59dd86b.jpg" alt="救助行动" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">紧急救助</span>
+                            <span class="text-sm text-gray-500">2024-12-20</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">冬季暖心救助行动</h3>
+                        <p class="text-gray-600 mb-4">
+                            为街头流浪狗搭建临时庇护所，提供温暖的窝和充足的食物，
+                            帮助它们度过寒冷的冬天。
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-500">已有 23 人参与</span>
+                            <span class="text-sm text-orange-600 font-medium">还需要 7 人</span>
+                        </div>
+                        <button class="w-full btn-primary text-white py-3 rounded-lg font-medium" onclick="joinActivity('冬季暖心救助行动')">
+                            立即参与
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="action-card rounded-2xl overflow-hidden">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.littlewhitedogco.com/9c5334727504189d1973467c5a3c45f59d7e7652.jpg" alt="医疗救助" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">医疗救助</span>
+                            <span class="text-sm text-gray-500">2024-12-18</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">流浪动物医疗支援</h3>
+                        <p class="text-gray-600 mb-4">
+                            为受伤和生病的流浪狗提供紧急医疗救助，
+                            包括手术、药物治疗和康复护理。
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-500">目标筹款 ¥50,000</span>
+                            <span class="text-sm text-green-600 font-medium">已完成 68%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 68%"></div>
+                        </div>
+                        <button class="w-full btn-primary text-white py-3 rounded-lg font-medium" onclick="donateToActivity('流浪动物医疗支援')">
+                            爱心捐赠
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="action-card rounded-2xl overflow-hidden">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.lostdogrescue.org/eb1b7d60dd95a020646fb2f6f68bc32127a255f6.jpg" alt="领养活动" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">领养活动</span>
+                            <span class="text-sm text-gray-500">2024-12-25</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">圣诞特别领养日</h3>
+                        <p class="text-gray-600 mb-4">
+                            在圣诞节期间举办大型领养活动，为更多流浪狗找到温暖的家，
+                            让它们在节日里感受到爱。
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-500">活动地点：北京朝阳公园</span>
+                            <span class="text-sm text-blue-600 font-medium">免费参加</span>
+                        </div>
+                        <button class="w-full btn-primary text-white py-3 rounded-lg font-medium" onclick="registerActivity('圣诞特别领养日')">
+                            报名参加
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Volunteer Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">志愿者风采</h2>
+                <p class="text-xl text-gray-600">每一位志愿者都是改变世界的力量</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="volunteer-card rounded-2xl p-6 text-center">
+                    <img src="https://kimi-web-img.moonshot.cn/img/static-28.sinclairstoryline.com/10d07675b5aee0fdb7342e7f2121cbe082147467.jpg" alt="志愿者" class="w-20 h-20 rounded-full object-cover mx-auto mb-4">
+                    <h3 class="text-lg font-bold mb-2">张小明</h3>
+                    <p class="text-gray-600 text-sm mb-3">志愿者时长：280小时</p>
+                    <p class="text-gray-600 text-sm">"每次看到狗狗们找到新家，我都感到无比欣慰。这是我做过最有意义的事情。"</p>
+                </div>
+                
+                <div class="volunteer-card rounded-2xl p-6 text-center">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.muttsnmittens.com/ca7dc7880420fa4f18b1af10cbdeda03dd1d2d13.jpeg" alt="志愿者" class="w-20 h-20 rounded-full object-cover mx-auto mb-4">
+                    <h3 class="text-lg font-bold mb-2">李小红</h3>
+                    <p class="text-gray-600 text-sm mb-3">志愿者时长：320小时</p>
+                    <p class="text-gray-600 text-sm">"作为一名兽医，我能用我的专业技能帮助这些可爱的生命，这是我的使命。"</p>
+                </div>
+                
+                <div class="volunteer-card rounded-2xl p-6 text-center">
+                    <img src="https://kimi-web-img.moonshot.cn/img/cf.geekdo-images.com/81d6ec6e3ee4f48adc46aba663a847009a854158.jpg" alt="志愿者" class="w-20 h-20 rounded-full object-cover mx-auto mb-4">
+                    <h3 class="text-lg font-bold mb-2">王大华</h3>
+                    <p class="text-gray-600 text-sm mb-3">志愿者时长：150小时</p>
+                    <p class="text-gray-600 text-sm">"退休后的生活因为有了这些毛孩子而变得充实，我收获了满满的快乐和感动。"</p>
+                </div>
+                
+                <div class="volunteer-card rounded-2xl p-6 text-center">
+                    <img src="https://kimi-web-img.moonshot.cn/img/cf.geekdo-images.com/47bcb096c79a9a7a0f20d98d1af7c08e4cc7f897.jpg" alt="志愿者" class="w-20 h-20 rounded-full object-cover mx-auto mb-4">
+                    <h3 class="text-lg font-bold mb-2">陈小丽</h3>
+                    <p class="text-gray-600 text-sm mb-3">志愿者时长：200小时</p>
+                    <p class="text-gray-600 text-sm">"作为大学生，参与救助活动让我学会了责任和爱心，这将是我一生的财富。"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Timeline Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">行动时间线</h2>
+                <p class="text-xl text-gray-600">记录每一个重要的救助时刻</p>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">成立北京流浪动物救助联盟</h3>
+                            <span class="text-sm text-gray-500">2024年1月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            联合15家动物保护组织，成立北京流浪动物救助联盟，
+                            建立统一的救助标准和协作机制。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">启动"温暖冬季"救助计划</h3>
+                            <span class="text-sm text-gray-500">2024年2月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            为街头流浪狗搭建200个临时庇护所，
+                            发放5000份食物包，帮助它们度过寒冬。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">政府出台流浪动物管理新规</h3>
+                            <span class="text-sm text-gray-500">2024年4月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            北京市政府出台新的流浪动物管理规定，
+                            明确救助责任和资金支持，为救助工作提供政策保障。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">建立首个社区救助站</h3>
+                            <span class="text-sm text-gray-500">2024年6月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            在朝阳区建立首个社区救助站，配备专业医疗设备和志愿者，
+                            为周边流浪狗提供及时的救助服务。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">举办首届领养日活动</h3>
+                            <span class="text-sm text-gray-500">2024年8月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            在奥林匹克公园举办大型领养日活动，
+                            当天成功为156只流浪狗找到新家，创下历史新高。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="action-card p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold">启动"云养计划"</h3>
+                            <span class="text-sm text-gray-500">2024年10月</span>
+                        </div>
+                        <p class="text-gray-600">
+                            创新推出"云养计划"，让无法领养的人也能参与救助，
+                            已有超过1000人参与云养，筹集资金50万元。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Partners Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">合作伙伴</h2>
+                <p class="text-xl text-gray-600">携手共建和谐社区</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="action-card p-6 rounded-2xl text-center">
+                    <div class="partner-logo text-4xl mb-4">🏥</div>
+                    <h3 class="text-lg font-bold mb-2">北京宠物医院联盟</h3>
+                    <p class="text-gray-600 text-sm">提供专业医疗服务和优惠治疗</p>
+                </div>
+                
+                <div class="action-card p-6 rounded-2xl text-center">
+                    <div class="partner-logo text-4xl mb-4">🏛️</div>
+                    <h3 class="text-lg font-bold mb-2">北京市公安局</h3>
+                    <p class="text-gray-600 text-sm">协助流浪动物收容和管理</p>
+                </div>
+                
+                <div class="action-card p-6 rounded-2xl text-center">
+                    <div class="partner-logo text-4xl mb-4">🏬</div>
+                    <h3 class="text-lg font-bold mb-2">宠物用品企业</h3>
+                    <p class="text-gray-600 text-sm">提供食物、用品等物资支持</p>
+                </div>
+                
+                <div class="action-card p-6 rounded-2xl text-center">
+                    <div class="partner-logo text-4xl mb-4">📺</div>
+                    <h3 class="text-lg font-bold mb-2">媒体合作伙伴</h3>
+                    <p class="text-gray-600 text-sm">宣传救助理念，提高社会关注</p>
+                </div>
+            </div>
+            
+            <!-- Statistics Chart -->
+            <div class="action-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-6 text-center">合作成果统计</h3>
+                <div id="partnership-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Call to Action -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="action-card p-12 rounded-2xl">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">加入我们，一起行动</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    无论您有多少时间和能力，都能找到适合自己的参与方式。
+                    让我们一起为流浪狗救助事业贡献力量。
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <button class="btn-primary text-white px-8 py-4 rounded-full font-medium text-lg" onclick="showVolunteerForm()">
+                        👥 成为志愿者
+                    </button>
+                    <button class="border-2 border-orange-500 text-orange-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-orange-50 transition-colors" onclick="showDonationModal()">
+                        💝 爱心捐赠
+                    </button>
+                    <button class="border-2 border-green-500 text-green-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-green-50 transition-colors" onclick="showPartnershipForm()">
+                        🤝 机构合作
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-2xl font-bold">爱犬救助平台</span>
+                </div>
+                <p class="text-gray-400 mb-4">给它一个家，让爱终止流浪</p>
+                <p class="text-gray-500 text-sm">© 2024 爱犬救助平台. 用心守护每一个生命.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="volunteer-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-6 text-center">志愿者申请表</h3>
+            
+            <form id="volunteer-form" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">姓名 *</label>
+                        <input type="text" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">联系电话 *</label>
+                        <input type="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">年龄 *</label>
+                        <input type="number" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">职业</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">可参与的活动类型 *</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="activity-type" value="救助行动" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">救助行动</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="activity-type" value="医疗协助" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">医疗协助</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="activity-type" value="宣传推广" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">宣传推广</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="activity-type" value="活动组织" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">活动组织</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">可参与的时间</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="available-time" value="工作日" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">工作日</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="available-time" value="周末" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">周末</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="available-time" value="节假日" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                            <span class="text-sm">节假日</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">相关经验</label>
+                    <textarea rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请描述您的相关经验，包括养宠经验、志愿活动经验等"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">申请动机</label>
+                    <textarea rows="3" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请描述您为什么想成为志愿者"></textarea>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="button" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hideVolunteerForm()">
+                        取消
+                    </button>
+                    <button type="submit" class="flex-1 btn-primary text-white py-3 rounded-lg font-medium">
+                        提交申请
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="donation-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-4 text-center">爱心捐赠</h3>
+            <p class="text-gray-600 mb-6 text-center">您的每一份捐赠都将用于流浪狗的救助和照顾</p>
+            
+            <div class="space-y-4 mb-6">
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left" onclick="selectDonationAmount(50)">
+                    <div class="font-medium">¥50</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供一天的食物</div>
+                </button>
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left" onclick="selectDonationAmount(200)">
+                    <div class="font-medium">¥200</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供基础医疗检查</div>
+                </button>
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left" onclick="selectDonationAmount(500)">
+                    <div class="font-medium">¥500</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供全面疫苗接种</div>
+                </button>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hideDonationModal()">
+                    取消
+                </button>
+                <button class="flex-1 btn-primary text-white py-3 rounded-lg font-medium" onclick="processDonation()">
+                    确认捐赠
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedDonationAmount = 0;
+        let partnershipChart;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeActionPage();
+            initializeCounters();
+            initializePartnershipChart();
+        });
+        
+        // 初始化行动页面
+        function initializeActionPage() {
+            // 滚动显示效果
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // 初始化计数器
+        function initializeCounters() {
+            const counters = [
+                { id: 'active-events', target: 28, duration: 1500 },
+                { id: 'volunteer-hours', target: 15680, duration: 2000 },
+                { id: 'partner-orgs', target: 45, duration: 1500 },
+                { id: 'community-events', target: 156, duration: 1500 }
+            ];
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = counters.find(c => c.id === entry.target.id);
+                        if (counter) {
+                            animateCounter(counter);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                const element = document.getElementById(counter.id);
+                if (element) {
+                    observer.observe(element);
+                }
+            });
+        }
+        
+        // 数字计数动画
+        function animateCounter(counter) {
+            const element = document.getElementById(counter.id);
+            
+            anime({
+                targets: { count: 0 },
+                count: counter.target,
+                duration: counter.duration,
+                easing: 'easeOutExpo',
+                update: function(anim) {
+                    const value = anim.animatables[0].target.count;
+                    element.textContent = Math.floor(value).toLocaleString();
+                }
+            });
+        }
+        
+        // 初始化合作伙伴图表
+        function initializePartnershipChart() {
+            partnershipChart = echarts.init(document.getElementById('partnership-chart'));
+            
+            const option = {
+                color: ['#D2691E', '#8B4513', '#228B22', '#CD853F', '#DEB887'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+                legend: {
+                    data: ['救助数量', '领养数量', '志愿者增长', '合作伙伴']
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '数量',
+                        position: 'left'
+                    },
+                    {
+                        type: 'value',
+                        name: '合作伙伴数',
+                        position: 'right'
+                    }
+                ],
+                series: [
+                    {
+                        name: '救助数量',
+                        type: 'bar',
+                        data: [120, 132, 101, 134, 90, 230, 210, 182, 191, 234, 290, 330]
+                    },
+                    {
+                        name: '领养数量',
+                        type: 'bar',
+                        data: [80, 95, 75, 98, 65, 180, 165, 145, 152, 188, 235, 280]
+                    },
+                    {
+                        name: '志愿者增长',
+                        type: 'line',
+                        data: [15, 25, 18, 32, 28, 45, 42, 38, 41, 48, 55, 62],
+                        smooth: true
+                    },
+                    {
+                        name: '合作伙伴',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: [5, 8, 12, 18, 22, 28, 32, 35, 38, 41, 43, 45],
+                        smooth: true
+                    }
+                ]
+            };
+            
+            partnershipChart.setOption(option);
+            
+            // 响应式调整
+            window.addEventListener('resize', function() {
+                if (partnershipChart) {
+                    partnershipChart.resize();
+                }
+            });
+        }
+        
+        // 参与活动
+        function joinActivity(activityName) {
+            alert(`感谢您想要参与"${activityName}"！我们会尽快与您联系安排具体事宜。`);
+        }
+        
+        // 捐赠活动
+        function donateToActivity(activityName) {
+            showDonationModal();
+        }
+        
+        // 注册活动
+        function registerActivity(activityName) {
+            alert(`您已成功报名参加"${activityName}"！活动详情将发送到您的邮箱。`);
+        }
+        
+        // 显示志愿者申请表
+        function showVolunteerForm() {
+            document.getElementById('volunteer-modal').classList.remove('hidden');
+            anime({
+                targets: '#volunteer-modal .bg-white',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutBack'
+            });
+        }
+        
+        // 隐藏志愿者申请表
+        function hideVolunteerForm() {
+            anime({
+                targets: '#volunteer-modal .bg-white',
+                scale: [1, 0.8],
+                opacity: [1, 0],
+                duration: 200,
+                easing: 'easeInBack',
+                complete: function() {
+                    document.getElementById('volunteer-modal').classList.add('hidden');
+                }
+            });
+        }
+        
+        // 显示捐赠模态框
+        function showDonationModal() {
+            document.getElementById('donation-modal').classList.remove('hidden');
+            anime({
+                targets: '#donation-modal .bg-white',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutBack'
+            });
+        }
+        
+        // 隐藏捐赠模态框
+        function hideDonationModal() {
+            anime({
+                targets: '#donation-modal .bg-white',
+                scale: [1, 0.8],
+                opacity: [1, 0],
+                duration: 200,
+                easing: 'easeInBack',
+                complete: function() {
+                    document.getElementById('donation-modal').classList.add('hidden');
+                }
+            });
+        }
+        
+        // 选择捐赠金额
+        function selectDonationAmount(amount) {
+            selectedDonationAmount = amount;
+            // 更新UI显示选中的金额
+            document.querySelectorAll('#donation-modal button').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                btn.classList.add('border-gray-200');
+            });
+            event.target.closest('button').classList.remove('border-gray-200');
+            event.target.closest('button').classList.add('border-orange-500', 'bg-orange-50');
+        }
+        
+        // 处理捐赠
+        function processDonation() {
+            if (selectedDonationAmount === 0) {
+                alert('请选择捐赠金额');
+                return;
+            }
+            alert(`感谢您的慷慨捐赠 ¥${selectedDonationAmount}！我们会将您的爱心传递给需要帮助的狗狗们。`);
+            hideDonationModal();
+            selectedDonationAmount = 0;
+        }
+        
+        // 显示合作申请表
+        function showPartnershipForm() {
+            alert('机构合作申请功能正在开发中，请通过邮箱联系我们：partnership@dogrescue.org');
+        }
+        
+        // 表单提交处理
+        document.getElementById('volunteer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('志愿者申请已提交！我们会在5个工作日内与您联系安排面试。');
+            hideVolunteerForm();
+        });
+    </script>
+</body>
+</html>

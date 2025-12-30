@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>弃养图记 - 给它一个家，让爱终止流浪</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #D2691E;
+            --secondary-color: #8B4513;
+            --accent-color: #228B22;
+            --neutral-color: #F5F5DC;
+            --text-color: #2F2F2F;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-color) 0%, #FFF8DC 100%);
+            color: var(--text-color);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 245, 220, 0.95);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(210, 105, 30, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .story-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(210, 105, 30, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .before-after {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        
+        .before-after img {
+            transition: all 0.5s ease;
+        }
+        
+        .before-after:hover .after-image {
+            opacity: 1;
+        }
+        
+        .after-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        
+        .reason-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .reason-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(210, 105, 30, 0.1);
+        }
+        
+        .impact-stat {
+            background: linear-gradient(135deg, rgba(210, 105, 30, 0.1), rgba(139, 69, 19, 0.1));
+            border: 2px solid rgba(210, 105, 30, 0.3);
+        }
+        
+        .prevention-tip {
+            background: rgba(34, 139, 34, 0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 navbar-blur border-b border-orange-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">爱犬救助</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-orange-600 transition-colors">首页</a>
+                    <a href="adoption.html" class="text-gray-700 hover:text-orange-600 transition-colors">爱心领养</a>
+                    <a href="action.html" class="text-gray-700 hover:text-orange-600 transition-colors">我们在行动</a>
+                    <a href="abandonment.html" class="text-orange-600 font-medium hover:text-orange-700 transition-colors">弃养图记</a>
+                    <a href="forum.html" class="text-gray-700 hover:text-orange-600 transition-colors">论坛问答</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn-primary text-white px-6 py-2 rounded-full font-medium" onclick="showEducationModal()">
+                        科学养宠
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="hero-title text-5xl font-bold mb-6">弃养图记</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    每一只被遗弃的狗狗背后，都有一个令人心碎的故事。
+                    通过真实的图片和故事，我们呼吁大家珍视生命，停止弃养。
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="impact-stat p-6 rounded-2xl">
+                        <div class="text-3xl font-bold text-red-600 mb-2" id="abandonment-count">1,250</div>
+                        <div class="text-sm text-gray-600">年度弃养数量</div>
+                    </div>
+                    <div class="impact-stat p-6 rounded-2xl">
+                        <div class="text-3xl font-bold text-orange-600 mb-2" id="survival-rate">35%</div>
+                        <div class="text-sm text-gray-600">街头存活率</div>
+                    </div>
+                    <div class="impact-stat p-6 rounded-2xl">
+                        <div class="text-3xl font-bold text-green-600 mb-2" id="rescue-rate">68%</div>
+                        <div class="text-sm text-gray-600">救助成功率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Impact Statistics -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">弃养的影响</h2>
+                <p class="text-xl text-gray-600">数据揭示弃养问题的严重性</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="story-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">弃养原因分析</h3>
+                    <div id="abandonment-reasons-chart" style="height: 300px;"></div>
+                </div>
+                
+                <div class="story-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">流浪狗生存状况</h3>
+                    <div id="survival-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stories Gallery -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">真实故事</h2>
+                <p class="text-xl text-gray-600">每一个生命都值得被尊重和珍惜</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="story-card rounded-2xl overflow-hidden">
+                    <div class="before-after h-64">
+                        <img src="https://kimi-web-img.moonshot.cn/img/static.boredpanda.com/3075dea0238b4af8da61e061894cbdc36d58b076.png" alt="救助前后对比" class="w-full h-full object-cover">
+                        <img src="https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/d2c013b0d45a54b37a69890c256ab40a7fc118cf.jpg" alt="救助后" class="after-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">小橘的重生之路</h3>
+                        <p class="text-gray-600 mb-4">
+                            小橘被发现时瘦弱不堪，满身伤痕。经过三个月的精心治疗和照顾，
+                            它终于恢复了健康，现在在一个充满爱的家庭中快乐生活。
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">发现地点：北京朝阳区</span>
+                            <button class="text-orange-600 hover:text-orange-700 font-medium" onclick="readStory('小橘的故事')">
+                                阅读全文 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card rounded-2xl overflow-hidden">
+                    <div class="before-after h-64">
+                        <img src="https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/ec3e89a31af5c3842903413155aa1aef25a28a57.jpg" alt="救助前后对比" class="w-full h-full object-cover">
+                        <img src="https://kimi-web-img.moonshot.cn/img/static-28.sinclairstoryline.com/10d07675b5aee0fdb7342e7f2121cbe082147467.jpg" alt="救助后" class="after-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">毛毛的奇迹转变</h3>
+                        <p class="text-gray-600 mb-4">
+                            毛毛被遗弃在宠物医院门口，当时毛发打结，皮肤严重感染。
+                            经过专业治疗和爱心照顾，它重新焕发了生命的光彩。
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">发现地点：北京海淀区</span>
+                            <button class="text-orange-600 hover:text-orange-700 font-medium" onclick="readStory('毛毛的故事')">
+                                阅读全文 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card rounded-2xl overflow-hidden">
+                    <div class="before-after h-64">
+                        <img src="https://kimi-web-img.moonshot.cn/img/www.ocpetinfo.com/ff2ca8c662a9ae84198dd2d9cfd2fcfd9a72bb35.JPG" alt="救助前后对比" class="w-full h-full object-cover">
+                        <img src="https://kimi-web-img.moonshot.cn/img/www.muttsnmittens.com/ca7dc7880420fa4f18b1af10cbdeda03dd1d2d13.jpeg" alt="救助后" class="after-image w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">贝贝的温馨家园</h3>
+                        <p class="text-gray-600 mb-4">
+                            贝贝是一只被主人搬家遗弃的狗狗，在街头流浪了一个月。
+                            被救助后，它很快适应了新环境，现在有了永远的家。
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">发现地点：北京丰台区</span>
+                            <button class="text-orange-600 hover:text-orange-700 font-medium" onclick="readStory('贝贝的故事')">
+                                阅读全文 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Abandonment Reasons -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">弃养原因分析</h2>
+                <p class="text-xl text-gray-600">了解弃养原因，从根源解决问题</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="reason-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="text-lg font-bold mb-3">居住环境变化</h3>
+                    <p class="text-gray-600 text-sm mb-3">搬家、租房限制等原因导致无法继续饲养</p>
+                    <div class="text-2xl font-bold text-orange-600">32%</div>
+                </div>
+                
+                <div class="reason-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-lg font-bold mb-3">经济负担过重</h3>
+                    <p class="text-gray-600 text-sm mb-3">医疗费用、食物开支等超出承受能力</p>
+                    <div class="text-2xl font-bold text-orange-600">28%</div>
+                </div>
+                
+                <div class="reason-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl mb-4">👶</div>
+                    <h3 class="text-lg font-bold mb-3">家庭成员变化</h3>
+                    <p class="text-gray-600 text-sm mb-3">新生儿、过敏等家庭情况变化</p>
+                    <div class="text-2xl font-bold text-orange-600">18%</div>
+                </div>
+                
+                <div class="reason-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl mb-4">⏰</div>
+                    <h3 class="text-lg font-bold mb-3">时间精力不足</h3>
+                    <p class="text-gray-600 text-sm mb-3">工作繁忙、出差频繁等时间限制</p>
+                    <div class="text-2xl font-bold text-orange-600">22%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Prevention Guide -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">预防弃养指南</h2>
+                <p class="text-xl text-gray-600">科学养宠，负责任地陪伴</p>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="prevention-tip p-6 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-3 text-green-800">🐕 养宠前充分考虑</h3>
+                    <ul class="text-gray-700 space-y-2">
+                        <li>• 评估自己的经济能力，确保能承担宠物的一生开销</li>
+                        <li>• 考虑居住环境是否适合养宠，是否稳定</li>
+                        <li>• 了解宠物的寿命和不同阶段的需求</li>
+                        <li>• 与家人充分沟通，确保所有人都同意养宠</li>
+                    </ul>
+                </div>
+                
+                <div class="prevention-tip p-6 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-3 text-green-800">🏥 做好医疗准备</h3>
+                    <ul class="text-gray-700 space-y-2">
+                        <li>• 定期体检，预防疾病</li>
+                        <li>• 购买宠物保险，减轻医疗负担</li>
+                        <li>• 建立紧急医疗基金</li>
+                        <li>• 寻找可靠的宠物医院和医生</li>
+                    </ul>
+                </div>
+                
+                <div class="prevention-tip p-6 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-3 text-green-800">🏠 应对生活变化</h3>
+                    <ul class="text-gray-700 space-y-2">
+                        <li>• 搬家时提前寻找宠物友好型住房</li>
+                        <li>• 工作变化时安排好宠物的照顾</li>
+                        <li>• 家庭成员变化时做好宠物适应训练</li>
+                        <li>• 建立备用照顾人网络</li>
+                    </ul>
+                </div>
+                
+                <div class="prevention-tip p-6 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-3 text-green-800">🤝 寻求帮助和支持</h3>
+                    <ul class="text-gray-700 space-y-2">
+                        <li>• 遇到困难时主动寻求专业帮助</li>
+                        <li>• 加入宠物主人社群，获得支持</li>
+                        <li>• 考虑寄养、代养等临时解决方案</li>
+                        <li>• 联系救助机构寻求建议和帮助</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Legal Information -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">法律法规</h2>
+                <p class="text-xl text-gray-600">了解相关法律，保护宠物权益</p>
+            </div>
+            
+            <div class="story-card p-8 rounded-2xl">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-red-600">⚖️ 弃养的法律后果</h3>
+                        <ul class="text-gray-700 space-y-2">
+                            <li>• 根据《动物防疫法》，弃养宠物可能面临罚款</li>
+                            <li>• 严重弃养行为可能构成虐待动物罪</li>
+                            <li>• 弃养记录将影响个人信用</li>
+                            <li>• 可能被禁止再次饲养宠物</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-blue-600">🛡️ 宠物权益保护</h3>
+                        <ul class="text-gray-700 space-y-2">
+                            <li>• 宠物享有基本的生存权和健康权</li>
+                            <li>• 主人有义务提供必要的食物和医疗</li>
+                            <li>• 禁止虐待、遗弃宠物</li>
+                            <li>• 鼓励领养代替购买</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-yellow-50 rounded-xl border border-yellow-200">
+                    <h4 class="font-bold text-yellow-800 mb-2">💡 温馨提示</h4>
+                    <p class="text-yellow-700">
+                        如果您确实无法继续饲养宠物，请不要随意遗弃。
+                        可以联系当地的动物救助机构，寻求专业的帮助和建议。
+                        让我们一起为宠物创造一个更美好的世界。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Call to Action -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="story-card p-12 rounded-2xl">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">让我们一起改变</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    每一个小小的行动都能带来巨大的改变。
+                    从科学养宠开始，从负责任地对待每一个生命开始。
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <button class="btn-primary text-white px-8 py-4 rounded-full font-medium text-lg" onclick="window.location.href='adoption.html'">
+                        🏠 领养代替购买
+                    </button>
+                    <button class="border-2 border-orange-500 text-orange-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-orange-50 transition-colors" onclick="showEducationModal()">
+                        📚 学习科学养宠
+                    </button>
+                    <button class="border-2 border-green-500 text-green-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-green-50 transition-colors" onclick="window.location.href='forum.html'">
+                        💬 分享经验
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-2xl font-bold">爱犬救助平台</span>
+                </div>
+                <p class="text-gray-400 mb-4">给它一个家，让爱终止流浪</p>
+                <p class="text-gray-500 text-sm">© 2024 爱犬救助平台. 用心守护每一个生命.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="education-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">科学养宠指南</h3>
+                <button onclick="hideEducationModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-orange-600">🍽️ 科学喂养</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-bold mb-2">饮食要求</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 选择适合年龄和体型的优质狗粮</li>
+                                <li>• 定时定量喂养，避免过度喂食</li>
+                                <li>• 提供充足的清洁饮用水</li>
+                                <li>• 避免喂食人类食物，特别是巧克力、洋葱等有毒食物</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-bold mb-2">营养需求</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 蛋白质：维持肌肉和免疫系统健康</li>
+                                <li>• 脂肪：提供能量和必需脂肪酸</li>
+                                <li>• 维生素和矿物质：支持骨骼和牙齿发育</li>
+                                <li>• 纤维：促进消化系统健康</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-blue-600">🏥 健康管理</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-bold mb-2">定期护理</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 定期体检，预防疾病</li>
+                                <li>• 按时接种疫苗和驱虫</li>
+                                <li>• 定期清洁耳朵、眼睛和牙齿</li>
+                                <li>• 保持适当的运动量</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-bold mb-2">健康监测</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 观察食欲和精神状态</li>
+                                <li>• 注意排便情况</li>
+                                <li>• 检查皮肤和毛发状况</li>
+                                <li>• 及时发现异常行为</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-green-600">🎓 行为训练</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-bold mb-2">基础训练</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 如厕训练，建立良好的卫生习惯</li>
+                                <li>• 基本指令训练：坐下、等待、过来等</li>
+                                <li>• 社交训练，适应不同环境和人群</li>
+                                <li>• 纠正不良行为，如咬人、乱叫等</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-bold mb-2">心理健康</h5>
+                            <ul class="text-gray-600 space-y-1 text-sm">
+                                <li>• 提供足够的陪伴和关爱</li>
+                                <li>• 准备适当的玩具和活动</li>
+                                <li>• 建立规律的生活作息</li>
+                                <li>• 避免长时间的孤独和隔离</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl border border-orange-200">
+                    <h4 class="font-bold text-orange-800 mb-3">💡 特别提醒</h4>
+                    <ul class="text-orange-700 space-y-2 text-sm">
+                        <li>• 养宠是长期承诺，平均寿命10-15年</li>
+                        <li>• 年度花费约5000-15000元</li>
+                        <li>• 需要每天投入1-2小时的时间</li>
+                        <li>• 出行需要提前安排宠物照顾</li>
+                        <li>• 遇到问题时及时寻求专业帮助</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let abandonmentReasonsChart;
+        let survivalChart;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAbandonmentPage();
+            initializeCounters();
+            initializeCharts();
+        });
+        
+        // 初始化弃养页面
+        function initializeAbandonmentPage() {
+            // 滚动显示效果
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // 初始化计数器
+        function initializeCounters() {
+            const counters = [
+                { id: 'abandonment-count', target: 1250, duration: 2000 },
+                { id: 'survival-rate', target: 35, duration: 2000, suffix: '%' },
+                { id: 'rescue-rate', target: 68, duration: 2000, suffix: '%' }
+            ];
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = counters.find(c => c.id === entry.target.id);
+                        if (counter) {
+                            animateCounter(counter);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                const element = document.getElementById(counter.id);
+                if (element) {
+                    observer.observe(element);
+                }
+            });
+        }
+        
+        // 数字计数动画
+        function animateCounter(counter) {
+            const element = document.getElementById(counter.id);
+            
+            anime({
+                targets: { count: 0 },
+                count: counter.target,
+                duration: counter.duration,
+                easing: 'easeOutExpo',
+                update: function(anim) {
+                    const value = anim.animatables[0].target.count;
+                    if (counter.suffix === '%') {
+                        element.textContent = Math.floor(value) + '%';
+                    } else {
+                        element.textContent = Math.floor(value).toLocaleString();
+                    }
+                }
+            });
+        }
+        
+        // 初始化图表
+        function initializeCharts() {
+            // 弃养原因分析图
+            abandonmentReasonsChart = echarts.init(document.getElementById('abandonment-reasons-chart'));
+            
+            const abandonmentOption = {
+                color: ['#D2691E', '#8B4513', '#228B22', '#CD853F', '#DEB887'],
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c}% ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: '弃养原因',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: 32, name: '居住环境变化' },
+                            { value: 28, name: '经济负担过重' },
+                            { value: 18, name: '家庭成员变化' },
+                            { value: 12, name: '宠物行为问题' },
+                            { value: 10, name: '其他原因' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            abandonmentReasonsChart.setOption(abandonmentOption);
+            
+            // 流浪狗生存状况图
+            survivalChart = echarts.init(document.getElementById('survival-chart'));
+            
+            const survivalOption = {
+                color: ['#DC143C', '#FF6347', '#228B22', '#32CD32'],
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c}% ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: '生存状况',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: 35, name: '成功存活' },
+                            { value: 25, name: '被救助' },
+                            { value: 20, name: '疾病死亡' },
+                            { value: 20, name: '意外死亡' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            survivalChart.setOption(survivalOption);
+            
+            // 响应式调整
+            window.addEventListener('resize', function() {
+                if (abandonmentReasonsChart) {
+                    abandonmentReasonsChart.resize();
+                }
+                if (survivalChart) {
+                    survivalChart.resize();
+                }
+            });
+        }
+        
+        // 阅读故事
+        function readStory(storyName) {
+            alert(`即将跳转到${storyName}的详细页面`);
+        }
+        
+        // 显示教育模态框
+        function showEducationModal() {
+            document.getElementById('education-modal').classList.remove('hidden');
+            anime({
+                targets: '#education-modal .bg-white',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutBack'
+            });
+        }
+        
+        // 隐藏教育模态框
+        function hideEducationModal() {
+            anime({
+                targets: '#education-modal .bg-white',
+                scale: [1, 0.8],
+                opacity: [1, 0],
+                duration: 200,
+                easing: 'easeInBack',
+                complete: function() {
+                    document.getElementById('education-modal').classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

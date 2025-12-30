@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给它一个家，让爱终止流浪 - 流浪狗救助平台</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #D2691E;
+            --secondary-color: #8B4513;
+            --accent-color: #228B22;
+            --neutral-color: #F5F5DC;
+            --text-color: #2F2F2F;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-color) 0%, #FFF8DC 100%);
+            color: var(--text-color);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .decorative-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(210, 105, 30, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .stats-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 245, 220, 0.95);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="hearts-container"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 navbar-blur border-b border-orange-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">爱犬救助</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-orange-600 font-medium hover:text-orange-700 transition-colors">首页</a>
+                    <a href="adoption.html" class="text-gray-700 hover:text-orange-600 transition-colors">爱心领养</a>
+                    <a href="action.html" class="text-gray-700 hover:text-orange-600 transition-colors">我们在行动</a>
+                    <a href="abandonment.html" class="text-gray-700 hover:text-orange-600 transition-colors">弃养图记</a>
+                    <a href="forum.html" class="text-gray-700 hover:text-orange-600 transition-colors">论坛问答</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn-primary text-white px-6 py-2 rounded-full font-medium" onclick="showDonationModal()">
+                        立即捐赠
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-16 min-h-screen flex items-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <h1 class="hero-title text-5xl lg:text-6xl font-bold leading-tight">
+                        给它一个家
+                        <br>
+                        <span class="decorative-title text-4xl lg:text-5xl">让爱终止流浪</span>
+                    </h1>
+                    
+                    <p class="text-xl text-gray-600 leading-relaxed">
+                        每一只流浪狗都渴望一个温暖的家。通过科学救助、领养代替购买，
+                        我们共同为这些无助的生命带来希望。加入我们的救助行动，
+                        用爱心改变世界。
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="btn-primary text-white px-8 py-4 rounded-full font-medium text-lg" onclick="window.location.href='adoption.html'">
+                            立即领养
+                        </button>
+                        <button class="border-2 border-orange-500 text-orange-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-orange-50 transition-colors" onclick="showCloudAdoptionModal()">
+                            云养计划
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <img src="resources/hero-dog.png" alt="希望中的流浪狗" class="w-full h-auto rounded-2xl shadow-2xl">
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-600" id="rescued-count">12,580</div>
+                            <div class="text-sm text-gray-600">已成功救助</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Statistics Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">救助成果</h2>
+                <p class="text-xl text-gray-600">数据见证我们的努力与坚持</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div class="stats-card p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <div class="text-3xl font-bold text-orange-600 mb-2" id="adopted-count">8,920</div>
+                    <div class="text-gray-600">成功领养</div>
+                </div>
+                
+                <div class="stats-card p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">🏥</div>
+                    <div class="text-3xl font-bold text-green-600 mb-2" id="treated-count">15,340</div>
+                    <div class="text-gray-600">医疗救治</div>
+                </div>
+                
+                <div class="stats-card p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">👥</div>
+                    <div class="text-3xl font-bold text-blue-600 mb-2" id="volunteer-count">3,250</div>
+                    <div class="text-gray-600">志愿者</div>
+                </div>
+                
+                <div class="stats-card p-8 rounded-2xl text-center card-hover">
+                    <div class="text-4xl mb-4">💰</div>
+                    <div class="text-3xl font-bold text-purple-600 mb-2" id="donation-count">2.8M</div>
+                    <div class="text-gray-600">捐赠金额</div>
+                </div>
+            </div>
+            
+            <!-- Data Visualization -->
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="stats-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">月度救助趋势</h3>
+                    <div id="rescue-chart" style="height: 300px;"></div>
+                </div>
+                
+                <div class="stats-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">救助类型分布</h3>
+                    <div id="rescue-type-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Rescue Map Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">救助站点分布</h2>
+                <p class="text-xl text-gray-600">找到您附近的救助站点，立即参与救助行动</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div id="rescue-map" class="map-container"></div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold mb-4">附近救助站</h3>
+                    <div id="nearby-stations" class="space-y-4">
+                        <!-- Stations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Success Stories Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">成功救助故事</h2>
+                <p class="text-xl text-gray-600">每一个生命都值得被珍惜</p>
+            </div>
+            
+            <div class="splide" id="stories-slider">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="stats-card p-8 rounded-2xl mx-4">
+                                <img src="resources/transformation.png" alt="救助前后对比" class="w-full h-64 object-cover rounded-xl mb-6">
+                                <h3 class="text-2xl font-bold mb-4">小橘的重生之路</h3>
+                                <p class="text-gray-600 mb-4">
+                                    小橘被发现时瘦弱不堪，满身伤痕。经过三个月的精心治疗和照顾，
+                                    它终于恢复了健康，现在在一个充满爱的家庭中快乐生活。
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">救助时间：2024年3月</span>
+                                    <button class="text-orange-600 hover:text-orange-700 font-medium">阅读更多 →</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="stats-card p-8 rounded-2xl mx-4">
+                                <img src="resources/volunteers.png" alt="志愿者行动" class="w-full h-64 object-cover rounded-xl mb-6">
+                                <h3 class="text-2xl font-bold mb-4">社区志愿者在行动</h3>
+                                <p class="text-gray-600 mb-4">
+                                    来自各行各业的志愿者汇聚在一起，为流浪狗搭建临时庇护所，
+                                    提供食物和医疗帮助，用实际行动诠释着爱心的力量。
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">活动时间：2024年6月</span>
+                                    <button class="text-orange-600 hover:text-orange-700 font-medium">阅读更多 →</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="stats-card p-8 rounded-2xl mx-4">
+                                <img src="resources/adoption-stats.png" alt="领养统计" class="w-full h-64 object-cover rounded-xl mb-6">
+                                <h3 class="text-2xl font-bold mb-4">领养代替购买</h3>
+                                <p class="text-gray-600 mb-4">
+                                    通过科学宣传和社区教育，越来越多的人开始接受"领养代替购买"的理念，
+                                    为流浪狗提供了更多回家的机会。
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">宣传活动：2024年全年</span>
+                                    <button class="text-orange-600 hover:text-orange-700 font-medium">阅读更多 →</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Call to Action Section -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="stats-card p-12 rounded-2xl">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">立即行动，改变世界</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    每一个小小的行动都能带来巨大的改变。无论是领养、捐赠还是志愿服务，
+                    您的参与都能为流浪狗带来新的希望。
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <button class="btn-primary text-white px-8 py-4 rounded-full font-medium text-lg" onclick="window.location.href='adoption.html'">
+                        🏠 我要领养
+                    </button>
+                    <button class="border-2 border-orange-500 text-orange-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-orange-50 transition-colors" onclick="showDonationModal()">
+                        💝 爱心捐赠
+                    </button>
+                    <button class="border-2 border-green-500 text-green-600 px-8 py-4 rounded-full font-medium text-lg hover:bg-green-50 transition-colors" onclick="window.location.href='forum.html'">
+                        👥 成为志愿者
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-2xl font-bold">爱犬救助平台</span>
+                </div>
+                <p class="text-gray-400 mb-4">给它一个家，让爱终止流浪</p>
+                <p class="text-gray-500 text-sm">© 2024 爱犬救助平台. 用心守护每一个生命.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="donation-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-4 text-center">爱心捐赠</h3>
+            <p class="text-gray-600 mb-6 text-center">您的每一份捐赠都将用于流浪狗的救助和照顾</p>
+            
+            <div class="space-y-4 mb-6">
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left">
+                    <div class="font-medium">¥50</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供一天的食物</div>
+                </button>
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left">
+                    <div class="font-medium">¥200</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供基础医疗检查</div>
+                </button>
+                <button class="w-full p-4 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-left">
+                    <div class="font-medium">¥500</div>
+                    <div class="text-sm text-gray-500">为一只狗狗提供全面疫苗接种</div>
+                </button>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hideDonationModal()">
+                    取消
+                </button>
+                <button class="flex-1 btn-primary text-white py-3 rounded-lg font-medium">
+                    确认捐赠
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="cloud-adoption-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-4 text-center">云养计划</h3>
+            <p class="text-gray-600 mb-6 text-center">通过云养计划，您可以远程关心和帮助流浪狗</p>
+            
+            <div class="space-y-4 mb-6">
+                <div class="p-4 border border-gray-200 rounded-lg">
+                    <div class="font-medium mb-2">云养福利</div>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>• 每月收到狗狗近况照片和视频</li>
+                        <li>• 专属云养证书和纪念品</li>
+                        <li>• 与救助站建立长期联系</li>
+                        <li>• 参与狗狗生日庆祝活动</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hideCloudAdoptionModal()">
+                    了解详情
+                </button>
+                <button class="flex-1 btn-primary text-white py-3 rounded-lg font-medium" onclick="window.location.href='adoption.html'">
+                    立即参与
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
+</body>
+</html>

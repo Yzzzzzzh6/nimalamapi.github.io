@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心领养 - 给它一个家，让爱终止流浪</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #D2691E;
+            --secondary-color: #8B4513;
+            --accent-color: #228B22;
+            --neutral-color: #F5F5DC;
+            --text-color: #2F2F2F;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-color) 0%, #FFF8DC 100%);
+            color: var(--text-color);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 245, 220, 0.95);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(210, 105, 30, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .filter-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+        }
+        
+        .dog-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(210, 105, 30, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .tag {
+            background: rgba(210, 105, 30, 0.1);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag.vaccinated {
+            background: rgba(34, 139, 34, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .tag.urgent {
+            background: rgba(220, 20, 60, 0.1);
+            color: #DC143C;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 navbar-blur border-b border-orange-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">爱犬救助</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-orange-600 transition-colors">首页</a>
+                    <a href="adoption.html" class="text-orange-600 font-medium hover:text-orange-700 transition-colors">爱心领养</a>
+                    <a href="action.html" class="text-gray-700 hover:text-orange-600 transition-colors">我们在行动</a>
+                    <a href="abandonment.html" class="text-gray-700 hover:text-orange-600 transition-colors">弃养图记</a>
+                    <a href="forum.html" class="text-gray-700 hover:text-orange-600 transition-colors">论坛问答</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn-primary text-white px-6 py-2 rounded-full font-medium" onclick="showAdoptionForm()">
+                        发布领养
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="hero-title text-5xl font-bold mb-6">爱心领养</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    每一只狗狗都值得拥有一个温暖的家。浏览我们待领养的狗狗，
+                    找到您的心动伙伴，开启美好的陪伴之旅。
+                </p>
+                
+                <div class="flex justify-center items-center space-x-8 text-center">
+                    <div>
+                        <div class="text-3xl font-bold text-orange-600" id="available-dogs">156</div>
+                        <div class="text-sm text-gray-600">待领养</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-green-600" id="adopted-today">12</div>
+                        <div class="text-sm text-gray-600">今日领养</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-blue-600" id="success-rate">98%</div>
+                        <div class="text-sm text-gray-600">成功率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Filter Section -->
+    <section class="pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="filter-card p-6 rounded-2xl">
+                <div class="grid md:grid-cols-4 gap-6">
+                    <!-- 品种筛选 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">品种</label>
+                        <select id="breed-filter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <option value="">全部品种</option>
+                            <option value="金毛">金毛</option>
+                            <option value="拉布拉多">拉布拉多</option>
+                            <option value="哈士奇">哈士奇</option>
+                            <option value="柯基">柯基</option>
+                            <option value="泰迪">泰迪</option>
+                            <option value="土狗">土狗</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 年龄筛选 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">年龄</label>
+                        <select id="age-filter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <option value="">全部年龄</option>
+                            <option value="幼犬">幼犬 (0-1岁)</option>
+                            <option value="成犬">成犬 (1-7岁)</option>
+                            <option value="老年犬">老年犬 (7岁以上)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 性别筛选 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">性别</label>
+                        <select id="gender-filter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <option value="">全部性别</option>
+                            <option value="公">公</option>
+                            <option value="母">母</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 状态筛选 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">状态</label>
+                        <select id="status-filter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <option value="">全部状态</option>
+                            <option value="健康">健康</option>
+                            <option value="治疗中">治疗中</option>
+                            <option value="紧急">紧急救助</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-6">
+                    <div class="flex space-x-2">
+                        <button class="filter-btn active px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium" data-filter="all">
+                            全部
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium" data-filter="urgent">
+                            紧急救助
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium" data-filter="vaccinated">
+                            已接种疫苗
+                        </button>
+                        <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium" data-filter="small">
+                            小型犬
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">排序：</span>
+                        <select id="sort-filter" class="p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                            <option value="newest">最新发布</option>
+                            <option value="oldest">最早发布</option>
+                            <option value="urgent">紧急程度</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Dogs Grid -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="dogs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Dogs will be populated by JavaScript -->
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+                <button id="load-more-btn" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
+                    加载更多
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Success Stories -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">成功领养故事</h2>
+                <p class="text-xl text-gray-600">每一个被领养的生命都有了新的开始</p>
+            </div>
+            
+            <div class="splide" id="success-stories-slider">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="filter-card p-8 rounded-2xl mx-4">
+                                <div class="flex items-center space-x-4 mb-6">
+                                    <img src="https://kimi-web-img.moonshot.cn/img/static.boredpanda.com/3075dea0238b4af8da61e061894cbdc36d58b076.png" alt="成功领养" class="w-16 h-16 rounded-full object-cover">
+                                    <div>
+                                        <h3 class="text-xl font-bold">小黄的新家</h3>
+                                        <p class="text-gray-600">领养时间：2024年8月</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    "小黄刚来的时候很胆小，总是躲在角落里。现在它已经是我们家的一份子了，
+                                    每天早上都会叫我起床，陪我看电视，真的很感谢救助站的帮助。"
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">—— 李女士，北京</span>
+                                    <div class="flex text-yellow-400">
+                                        ⭐⭐⭐⭐⭐
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="filter-card p-8 rounded-2xl mx-4">
+                                <div class="flex items-center space-x-4 mb-6">
+                                    <img src="https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/d2c013b0d45a54b37a69890c256ab40a7fc118cf.jpg" alt="成功领养" class="w-16 h-16 rounded-full object-cover">
+                                    <div>
+                                        <h3 class="text-xl font-bold">毛毛的幸福生活</h3>
+                                        <p class="text-gray-600">领养时间：2024年9月</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    "毛毛是个特别聪明的孩子，学会了很多技能。它改变了我的生活，
+                                    让我变得更加有责任感。领养是我做过最正确的决定。"
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">—— 王先生，上海</span>
+                                    <div class="flex text-yellow-400">
+                                        ⭐⭐⭐⭐⭐
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="filter-card p-8 rounded-2xl mx-4">
+                                <div class="flex items-center space-x-4 mb-6">
+                                    <img src="https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/ec3e89a31af5c3842903413155aa1aef25a28a57.jpg" alt="成功领养" class="w-16 h-16 rounded-full object-cover">
+                                    <div>
+                                        <h3 class="text-xl font-bold">豆豆的成长故事</h3>
+                                        <p class="text-gray-600">领养时间：2024年7月</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    "豆豆从一只瘦弱的流浪狗变成了我们家的小公主。它教会了我什么是无条件的爱，
+                                    现在它每天都过得很开心，这就是我想要的生活。"
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">—— 张女士，广州</span>
+                                    <div class="flex text-yellow-400">
+                                        ⭐⭐⭐⭐⭐
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Adoption Process -->
+    <section class="py-20 scroll-reveal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">领养流程</h2>
+                <p class="text-xl text-gray-600">简单四步，带它回家</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">1</div>
+                    <h3 class="text-xl font-bold mb-2">浏览选择</h3>
+                    <p class="text-gray-600">浏览待领养狗狗信息，找到您心仪的伙伴</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">2</div>
+                    <h3 class="text-xl font-bold mb-2">提交申请</h3>
+                    <p class="text-gray-600">填写领养申请表，提供相关证明材料</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">3</div>
+                    <h3 class="text-xl font-bold mb-2">审核面谈</h3>
+                    <p class="text-gray-600">等待审核通过，与狗狗进行互动面谈</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">4</div>
+                    <h3 class="text-xl font-bold mb-2">带它回家</h3>
+                    <p class="text-gray-600">签署领养协议，完成手续，带它回家</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-2xl font-bold">爱犬救助平台</span>
+                </div>
+                <p class="text-gray-400 mb-4">给它一个家，让爱终止流浪</p>
+                <p class="text-gray-500 text-sm">© 2024 爱犬救助平台. 用心守护每一个生命.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="adoption-form-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-6 text-center">领养申请表</h3>
+            
+            <form id="adoption-form" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">姓名 *</label>
+                        <input type="text" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">联系电话 *</label>
+                        <input type="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">身份证号 *</label>
+                        <input type="text" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">居住地址 *</label>
+                        <input type="text" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">住房类型 *</label>
+                    <select required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <option value="">请选择住房类型</option>
+                        <option value="自有住房">自有住房</option>
+                        <option value="租房">租房</option>
+                        <option value="与父母同住">与父母同住</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">养宠经验 *</label>
+                    <select required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <option value="">请选择养宠经验</option>
+                        <option value="无经验">无经验</option>
+                        <option value="有一些经验">有一些经验</option>
+                        <option value="经验丰富">经验丰富</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">家庭成员情况</label>
+                    <textarea rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请描述家庭成员情况，是否有老人、小孩等"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">为什么选择领养这只狗狗？</label>
+                    <textarea rows="3" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"></textarea>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="agreement" required class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                    <label for="agreement" class="text-sm text-gray-600">
+                        我已阅读并同意 <a href="#" class="text-orange-600 hover:text-orange-700">领养协议条款</a>
+                    </label>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="button" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hideAdoptionForm()">
+                        取消
+                    </button>
+                    <button type="submit" class="flex-1 btn-primary text-white py-3 rounded-lg font-medium">
+                        提交申请
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="dog-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div id="dog-detail-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 狗狗数据
+        const dogsData = [
+            {
+                id: 1,
+                name: '小黄',
+                breed: '金毛',
+                age: '2岁',
+                gender: '母',
+                size: '大型',
+                weight: '25kg',
+                status: '健康',
+                vaccinated: true,
+                sterilized: true,
+                urgent: false,
+                description: '小黄是一只非常温顺的金毛，性格友好，喜欢和人互动。已经接受过基本训练，会坐下、握手等指令。寻找一个有爱心的家庭。',
+                personality: ['温顺', '友好', '聪明'],
+                health: '健康状况良好，已驱虫',
+                story: '小黄是在一个小区里被发现的，当时又瘦又饿。经过救助站的照顾，现在已经成为一只健康快乐的狗狗。',
+                requirements: '需要有足够的活动空间，最好能经常陪伴',
+                images: ['https://kimi-web-img.moonshot.cn/img/static.boredpanda.com/3075dea0238b4af8da61e061894cbdc36d58b076.png'],
+                publishDate: '2024-12-15'
+            },
+            {
+                id: 2,
+                name: '豆豆',
+                breed: '柯基',
+                age: '1岁',
+                gender: '公',
+                size: '中型',
+                weight: '12kg',
+                status: '健康',
+                vaccinated: true,
+                sterilized: false,
+                urgent: true,
+                description: '豆豆是一只活泼可爱的柯基，精力充沛，喜欢玩耍。非常适合有孩子的家庭，能给家庭带来很多欢乐。',
+                personality: ['活泼', '好奇', '粘人'],
+                health: '健康，需要定期运动',
+                story: '豆豆是被前主人遗弃在宠物医院的，医生说它很健康，只是需要一个新的家。',
+                requirements: '需要定期运动和陪伴',
+                images: ['https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/d2c013b0d45a54b37a69890c256ab40a7fc118cf.jpg'],
+                publishDate: '2024-12-18'
+            },
+            {
+                id: 3,
+                name: '毛毛',
+                breed: '泰迪',
+                age: '3岁',
+                gender: '母',
+                size: '小型',
+                weight: '5kg',
+                status: '治疗中',
+                vaccinated: true,
+                sterilized: true,
+                urgent: false,
+                description: '毛毛是一只优雅的泰迪犬，性格文静，不太爱叫。适合安静的家庭环境，是理想的陪伴犬。',
+                personality: ['文静', '优雅', '忠诚'],
+                health: '正在治疗皮肤病，恢复良好',
+                story: '毛毛是在一个废弃工厂被发现的，当时毛发打结，皮肤有问题。经过治疗，现在已经好多了。',
+                requirements: '需要定期美容和护理',
+                images: ['https://kimi-web-img.moonshot.cn/img/cdn.acidcow.com/ec3e89a31af5c3842903413155aa1aef25a28a57.jpg'],
+                publishDate: '2024-12-10'
+            },
+            {
+                id: 4,
+                name: '小黑',
+                breed: '土狗',
+                age: '6个月',
+                gender: '公',
+                size: '中型',
+                weight: '8kg',
+                status: '健康',
+                vaccinated: false,
+                sterilized: false,
+                urgent: false,
+                description: '小黑是一只聪明的小土狗，学习能力很强。虽然年纪小但很懂事，是个很好的看家伙伴。',
+                personality: ['聪明', '警觉', '忠诚'],
+                health: '健康，需要接种疫苗',
+                story: '小黑是母狗生下的一窝小狗中的一只，其他兄弟姐妹都找到了家，只有它还等着被领养。',
+                requirements: '需要完成疫苗接种',
+                images: ['https://kimi-web-img.moonshot.cn/img/static-28.sinclairstoryline.com/10d07675b5aee0fdb7342e7f2121cbe082147467.jpg'],
+                publishDate: '2024-12-20'
+            },
+            {
+                id: 5,
+                name: '贝贝',
+                breed: '拉布拉多',
+                age: '4岁',
+                gender: '母',
+                size: '大型',
+                weight: '30kg',
+                status: '健康',
+                vaccinated: true,
+                sterilized: true,
+                urgent: false,
+                description: '贝贝是一只非常温顺的拉布拉多，对小孩特别友好。已经绝育，健康状况良好。',
+                personality: ['温顺', '耐心', '友好'],
+                health: '健康状况优秀',
+                story: '贝贝的原主人因为工作调动无法继续照顾，希望找一个有爱心的新家庭。',
+                requirements: '需要较大的活动空间',
+                images: ['https://kimi-web-img.moonshot.cn/img/www.ocpetinfo.com/ff2ca8c662a9ae84198dd2d9cfd2fcfd9a72bb35.JPG'],
+                publishDate: '2024-12-12'
+            },
+            {
+                id: 6,
+                name: 'lucky',
+                breed: '哈士奇',
+                age: '1.5岁',
+                gender: '公',
+                size: '大型',
+                weight: '22kg',
+                status: '健康',
+                vaccinated: true,
+                sterilized: false,
+                urgent: true,
+                description: 'Lucky是一只帅气的哈士奇，精力充沛，需要大量运动。适合有经验的狗主人。',
+                personality: ['活泼', '独立', '好奇'],
+                health: '健康，需要定期运动',
+                story: 'Lucky是在高速公路边被发现的，当时又饿又累。现在完全恢复了活力。',
+                requirements: '需要大量运动和训练',
+                images: ['https://kimi-web-img.moonshot.cn/img/thepetgazette.com/23041ac1c54c8dba1c5184fa0185102ff34af70e.jpg'],
+                publishDate: '2024-12-19'
+            }
+        ];
+        
+        let filteredDogs = [...dogsData];
+        let currentPage = 1;
+        const dogsPerPage = 12;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdoptionPage();
+            initializeFilters();
+            initializeSliders();
+            renderDogs();
+            initializeCounters();
+        });
+        
+        // 初始化领养页面
+        function initializeAdoptionPage() {
+            // 滚动显示效果
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // 初始化筛选器
+        function initializeFilters() {
+            // 下拉筛选
+            const filters = ['breed-filter', 'age-filter', 'gender-filter', 'status-filter', 'sort-filter'];
+            filters.forEach(filterId => {
+                const element = document.getElementById(filterId);
+                if (element) {
+                    element.addEventListener('change', applyFilters);
+                }
+            });
+            
+            // 快速筛选按钮
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    applyQuickFilter(this.dataset.filter);
+                });
+            });
+            
+            // 加载更多按钮
+            document.getElementById('load-more-btn').addEventListener('click', loadMoreDogs);
+        }
+        
+        // 应用筛选
+        function applyFilters() {
+            const breed = document.getElementById('breed-filter').value;
+            const age = document.getElementById('age-filter').value;
+            const gender = document.getElementById('gender-filter').value;
+            const status = document.getElementById('status-filter').value;
+            const sort = document.getElementById('sort-filter').value;
+            
+            filteredDogs = dogsData.filter(dog => {
+                return (!breed || dog.breed === breed) &&
+                       (!age || dog.age.includes(age)) &&
+                       (!gender || dog.gender === gender) &&
+                       (!status || dog.status === status);
+            });
+            
+            // 排序
+            switch(sort) {
+                case 'newest':
+                    filteredDogs.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                    break;
+                case 'oldest':
+                    filteredDogs.sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate));
+                    break;
+                case 'urgent':
+                    filteredDogs.sort((a, b) => b.urgent - a.urgent);
+                    break;
+            }
+            
+            currentPage = 1;
+            renderDogs();
+        }
+        
+        // 应用快速筛选
+        function applyQuickFilter(filter) {
+            switch(filter) {
+                case 'all':
+                    filteredDogs = [...dogsData];
+                    break;
+                case 'urgent':
+                    filteredDogs = dogsData.filter(dog => dog.urgent);
+                    break;
+                case 'vaccinated':
+                    filteredDogs = dogsData.filter(dog => dog.vaccinated);
+                    break;
+                case 'small':
+                    filteredDogs = dogsData.filter(dog => dog.size === '小型');
+                    break;
+            }
+            
+            currentPage = 1;
+            renderDogs();
+        }
+        
+        // 渲染狗狗卡片
+        function renderDogs() {
+            const grid = document.getElementById('dogs-grid');
+            const startIndex = 0;
+            const endIndex = currentPage * dogsPerPage;
+            const dogsToShow = filteredDogs.slice(startIndex, endIndex);
+            
+            grid.innerHTML = '';
+            
+            dogsToShow.forEach(dog => {
+                const dogCard = createDogCard(dog);
+                grid.appendChild(dogCard);
+            });
+            
+            // 更新加载更多按钮
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (endIndex >= filteredDogs.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+            
+            // 更新统计数据
+            document.getElementById('available-dogs').textContent = filteredDogs.length;
+        }
+        
+        // 创建狗狗卡片
+        function createDogCard(dog) {
+            const card = document.createElement('div');
+            card.className = 'dog-card rounded-2xl overflow-hidden cursor-pointer';
+            card.onclick = () => showDogDetail(dog);
+            
+            const tags = [];
+            if (dog.vaccinated) tags.push('<span class="tag vaccinated">已疫苗</span>');
+            if (dog.urgent) tags.push('<span class="tag urgent">紧急</span>');
+            if (dog.sterilized) tags.push('<span class="tag">已绝育</span>');
+            
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${dog.images[0]}" alt="${dog.name}" class="w-full h-48 object-cover">
+                    <div class="absolute top-3 left-3 flex space-x-1">
+                        ${tags.join('')}
+                    </div>
+                    <div class="absolute top-3 right-3 bg-white bg-opacity-90 px-2 py-1 rounded-full text-xs font-medium">
+                        ${dog.gender === '公' ? '♂' : '♀'} ${dog.age}
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-800">${dog.name}</h3>
+                        <span class="text-sm text-gray-500">${dog.breed}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-600 mb-3">
+                        <span>${dog.size} • ${dog.weight}</span>
+                        <span class="px-2 py-1 rounded ${dog.status === '健康' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${dog.status}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">${dog.description}</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 btn-primary text-white py-2 rounded-lg text-sm font-medium" onclick="event.stopPropagation(); showAdoptionForm('${dog.name}')">
+                            申请领养
+                        </button>
+                        <button class="px-4 py-2 border border-orange-500 text-orange-600 rounded-lg text-sm font-medium hover:bg-orange-50 transition-colors" onclick="event.stopPropagation(); showDogDetail(${JSON.stringify(dog).replace(/"/g, '&quot;')})">
+                            查看详情
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // 加载更多狗狗
+        function loadMoreDogs() {
+            currentPage++;
+            renderDogs();
+        }
+        
+        // 显示狗狗详情
+        function showDogDetail(dog) {
+            const modal = document.getElementById('dog-detail-modal');
+            const content = document.getElementById('dog-detail-content');
+            
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">${dog.name}</h3>
+                    <button onclick="hideDogDetail()" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <img src="${dog.images[0]}" alt="${dog.name}" class="w-full h-64 object-cover rounded-xl mb-4">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">品种：</span>${dog.breed}
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">年龄：</span>${dog.age}
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">性别：</span>${dog.gender}
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">体型：</span>${dog.size}
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">体重：</span>${dog.weight}
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">状态：</span>${dog.status}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold mb-3">基本信息</h4>
+                            <div class="flex space-x-2 mb-4">
+                                ${dog.vaccinated ? '<span class="tag vaccinated">已疫苗</span>' : ''}
+                                ${dog.sterilized ? '<span class="tag">已绝育</span>' : ''}
+                                ${dog.urgent ? '<span class="tag urgent">紧急</span>' : ''}
+                            </div>
+                            <p class="text-gray-600 mb-4">${dog.description}</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold mb-3">性格特点</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${dog.personality.map(p => `<span class="tag">${p}</span>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold mb-3">健康状况</h4>
+                            <p class="text-gray-600">${dog.health}</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold mb-3">救助故事</h4>
+                            <p class="text-gray-600">${dog.story}</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold mb-3">领养要求</h4>
+                            <p class="text-gray-600">${dog.requirements}</p>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button class="flex-1 btn-primary text-white py-3 rounded-lg font-medium" onclick="showAdoptionForm('${dog.name}')">
+                                申请领养
+                            </button>
+                            <button class="flex-1 border-2 border-orange-500 text-orange-600 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors">
+                                收藏
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // 隐藏狗狗详情
+        function hideDogDetail() {
+            document.getElementById('dog-detail-modal').classList.add('hidden');
+        }
+        
+        // 显示领养申请表
+        function showAdoptionForm(dogName = '') {
+            document.getElementById('adoption-form-modal').classList.remove('hidden');
+            if (dogName) {
+                // 可以在这里预填狗狗信息
+            }
+        }
+        
+        // 隐藏领养申请表
+        function hideAdoptionForm() {
+            document.getElementById('adoption-form-modal').classList.add('hidden');
+        }
+        
+        // 初始化轮播
+        function initializeSliders() {
+            const successStoriesSlider = new Splide('#success-stories-slider', {
+                type: 'loop',
+                perPage: 1,
+                perMove: 1,
+                gap: '2rem',
+                autoplay: true,
+                interval: 5000,
+                pauseOnHover: true,
+                breakpoints: {
+                    768: {
+                        perPage: 1
+                    }
+                }
+            });
+            
+            successStoriesSlider.mount();
+        }
+        
+        // 初始化计数器
+        function initializeCounters() {
+            const counters = [
+                { id: 'available-dogs', target: 156, duration: 1500 },
+                { id: 'adopted-today', target: 12, duration: 1500 },
+                { id: 'success-rate', target: 98, duration: 1500, suffix: '%' }
+            ];
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = counters.find(c => c.id === entry.target.id);
+                        if (counter) {
+                            animateCounter(counter);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                const element = document.getElementById(counter.id);
+                if (element) {
+                    observer.observe(element);
+                }
+            });
+        }
+        
+        // 数字计数动画
+        function animateCounter(counter) {
+            const element = document.getElementById(counter.id);
+            
+            anime({
+                targets: { count: 0 },
+                count: counter.target,
+                duration: counter.duration,
+                easing: 'easeOutExpo',
+                update: function(anim) {
+                    const value = anim.animatables[0].target.count;
+                    element.textContent = Math.floor(value) + (counter.suffix || '');
+                }
+            });
+        }
+        
+        // 表单提交处理
+        document.getElementById('adoption-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('领养申请已提交！我们会在3个工作日内与您联系。');
+            hideAdoptionForm();
+        });
+    </script>
+</body>
+</html>

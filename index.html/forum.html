@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论坛问答 - 给它一个家，让爱终止流浪</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #D2691E;
+            --secondary-color: #8B4513;
+            --accent-color: #228B22;
+            --neutral-color: #F5F5DC;
+            --text-color: #2F2F2F;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--neutral-color) 0%, #FFF8DC 100%);
+            color: var(--text-color);
+        }
+        
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 245, 220, 0.95);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .forum-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .forum-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(210, 105, 30, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .post-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(210, 105, 30, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(210, 105, 30, 0.1);
+        }
+        
+        .category-tab {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .category-tab:hover {
+            background: rgba(210, 105, 30, 0.1);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .expert-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .like-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .like-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .like-btn.liked {
+            color: var(--primary-color);
+        }
+        
+        .reply-form {
+            background: rgba(245, 245, 220, 0.5);
+            border-left: 4px solid var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 navbar-blur border-b border-orange-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">爱犬救助</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-orange-600 transition-colors">首页</a>
+                    <a href="adoption.html" class="text-gray-700 hover:text-orange-600 transition-colors">爱心领养</a>
+                    <a href="action.html" class="text-gray-700 hover:text-orange-600 transition-colors">我们在行动</a>
+                    <a href="abandonment.html" class="text-gray-700 hover:text-orange-600 transition-colors">弃养图记</a>
+                    <a href="forum.html" class="text-orange-600 font-medium hover:text-orange-700 transition-colors">论坛问答</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn-primary text-white px-6 py-2 rounded-full font-medium" onclick="showPostForm()">
+                        发布帖子
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="hero-title text-5xl font-bold mb-6">论坛问答</h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                    与爱心人士交流救助经验，向专家咨询养宠问题，
+                    分享您的救助故事，一起为流浪狗救助事业贡献力量。
+                </p>
+                
+                <div class="grid md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-3xl font-bold text-orange-600" id="total-posts">1,280</div>
+                        <div class="text-sm text-gray-600">总帖子数</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-green-600" id="active-users">856</div>
+                        <div class="text-sm text-gray-600">活跃用户</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-blue-600" id="expert-answers">342</div>
+                        <div class="text-sm text-gray-600">专家解答</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-purple-600" id="success-stories">89</div>
+                        <div class="text-sm text-gray-600">成功案例</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Categories -->
+    <section class="pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="forum-card p-6 rounded-2xl">
+                <div class="flex flex-wrap gap-3">
+                    <button class="category-tab active px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="all">
+                        全部
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="rescue">
+                        救助经验
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="adoption">
+                        领养交流
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="medical">
+                        医疗问答
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="training">
+                        行为训练
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="help">
+                        求助信息
+                    </button>
+                    <button class="category-tab px-4 py-2 rounded-full border border-gray-300 font-medium" data-category="share">
+                        经验分享
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Forum Posts -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Posts List -->
+                <div class="lg:col-span-2">
+                    <div id="posts-container" class="space-y-6">
+                        <!-- Posts will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Load More -->
+                    <div class="text-center mt-12">
+                        <button id="load-more-btn" class="btn-primary text-white px-8 py-3 rounded-full font-medium">
+                            加载更多
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Hot Posts -->
+                    <div class="forum-card p-6 rounded-2xl">
+                        <h3 class="text-xl font-bold mb-4">热门帖子</h3>
+                        <div class="space-y-4">
+                            <div class="border-b border-gray-200 pb-3">
+                                <h4 class="font-medium text-gray-800 mb-1">如何帮助害怕人的流浪狗？</h4>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <span>1,234 浏览</span>
+                                    <span class="mx-2">•</span>
+                                    <span>56 回复</span>
+                                </div>
+                            </div>
+                            <div class="border-b border-gray-200 pb-3">
+                                <h4 class="font-medium text-gray-800 mb-1">新手养狗必备清单</h4>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <span>987 浏览</span>
+                                    <span class="mx-2">•</span>
+                                    <span>43 回复</span>
+                                </div>
+                            </div>
+                            <div class="border-b border-gray-200 pb-3">
+                                <h4 class="font-medium text-gray-800 mb-1">狗狗皮肤病治疗方法分享</h4>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <span>756 浏览</span>
+                                    <span class="mx-2">•</span>
+                                    <span>38 回复</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Experts -->
+                    <div class="forum-card p-6 rounded-2xl">
+                        <h3 class="text-xl font-bold mb-4">在线专家</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="user-avatar">李</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium">李医生</span>
+                                        <span class="expert-badge">兽医专家</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">已解答 156 个问题</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="user-avatar">王</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium">王老师</span>
+                                        <span class="expert-badge">训练师</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">已解答 89 个问题</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="user-avatar">张</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium">张义工</span>
+                                        <span class="expert-badge">救助专家</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">已解答 234 个问题</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div class="forum-card p-6 rounded-2xl">
+                        <h3 class="text-xl font-bold mb-4">快速链接</h3>
+                        <div class="space-y-3">
+                            <button class="w-full text-left p-3 rounded-lg hover:bg-orange-50 transition-colors" onclick="showPostForm('help')">
+                                🆘 发布求助信息
+                            </button>
+                            <button class="w-full text-left p-3 rounded-lg hover:bg-orange-50 transition-colors" onclick="showPostForm('share')">
+                                💡 分享救助经验
+                            </button>
+                            <button class="w-full text-left p-3 rounded-lg hover:bg-orange-50 transition-colors" onclick="window.location.href='adoption.html'">
+                                🏠 查看待领养狗狗
+                            </button>
+                            <button class="w-full text-left p-3 rounded-lg hover:bg-orange-50 transition-colors" onclick="window.location.href='action.html'">
+                                👥 参与志愿活动
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🐕</span>
+                    </div>
+                    <span class="text-2xl font-bold">爱犬救助平台</span>
+                </div>
+                <p class="text-gray-400 mb-4">给它一个家，让爱终止流浪</p>
+                <p class="text-gray-500 text-sm">© 2024 爱犬救助平台. 用心守护每一个生命.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="post-form-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-6 text-center">发布新帖子</h3>
+            
+            <form id="post-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">标题 *</label>
+                    <input type="text" id="post-title" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请输入帖子标题">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">分类 *</label>
+                    <select id="post-category" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <option value="">请选择分类</option>
+                        <option value="rescue">救助经验</option>
+                        <option value="adoption">领养交流</option>
+                        <option value="medical">医疗问答</option>
+                        <option value="training">行为训练</option>
+                        <option value="help">求助信息</option>
+                        <option value="share">经验分享</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">内容 *</label>
+                    <textarea id="post-content" rows="8" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请详细描述您的问题或经验分享..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">标签</label>
+                    <input type="text" id="post-tags" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="请输入标签，用空格分隔">
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="button" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium" onclick="hidePostForm()">
+                        取消
+                    </button>
+                    <button type="submit" class="flex-1 btn-primary text-white py-3 rounded-lg font-medium">
+                        发布帖子
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="post-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div id="post-detail-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 论坛数据
+        const forumPosts = [
+            {
+                id: 1,
+                title: '如何帮助害怕人的流浪狗？',
+                category: 'rescue',
+                author: '爱心志愿者',
+                avatar: '爱',
+                content: '最近在小区发现一只很害怕人的流浪狗，每次靠近它就会跑开。想帮助它但不知道该怎么办，有经验的朋友能给些建议吗？',
+                tags: ['流浪狗', '救助技巧', '心理创伤'],
+                likes: 23,
+                replies: 8,
+                views: 1234,
+                publishTime: '2024-12-20 14:30',
+                lastReply: '2024-12-20 16:45',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '李医生',
+                        avatar: '李',
+                        content: '对于害怕人的流浪狗，最重要的是耐心。不要强行接近，可以先从远处投放食物开始，让它逐渐习惯你的存在。',
+                        isExpert: true,
+                        time: '2024-12-20 15:10'
+                    },
+                    {
+                        author: '张义工',
+                        avatar: '张',
+                        content: '建议用食物建立信任关系，每天固定时间地点投喂，慢慢缩短距离。一般需要1-2周时间。',
+                        isExpert: true,
+                        time: '2024-12-20 15:45'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: '新手养狗必备清单分享',
+                category: 'share',
+                author: '养狗达人',
+                avatar: '达',
+                content: '作为一个养狗5年的老手，想和大家分享一些新手养狗必备物品和经验，希望能帮助到刚开始养狗的朋友们。',
+                tags: ['新手指导', '养狗经验', '必备物品'],
+                likes: 45,
+                replies: 12,
+                views: 987,
+                publishTime: '2024-12-19 10:20',
+                lastReply: '2024-12-20 09:30',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '新手小白',
+                        avatar: '白',
+                        content: '非常感谢分享！正准备养狗，这个清单太及时了。',
+                        isExpert: false,
+                        time: '2024-12-19 11:15'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: '狗狗皮肤病治疗方法咨询',
+                category: 'medical',
+                author: '担心的主人',
+                avatar: '担',
+                content: '我家狗狗最近皮肤出现问题，有红疹和脱毛，请问有什么好的治疗方法吗？需要带去宠物医院吗？',
+                tags: ['皮肤病', '治疗方法', '健康咨询'],
+                likes: 18,
+                replies: 6,
+                views: 756,
+                publishTime: '2024-12-18 16:45',
+                lastReply: '2024-12-19 20:15',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '李医生',
+                        avatar: '李',
+                        content: '根据描述可能是过敏性皮炎或真菌感染。建议先带去宠物医院确诊，然后根据病因进行治疗。不要自行用药。',
+                        isExpert: true,
+                        time: '2024-12-18 17:20'
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: '紧急求助！发现受伤流浪狗',
+                category: 'help',
+                author: '路人甲',
+                avatar: '路',
+                content: '刚才在回家路上发现一只受伤的流浪狗，右前腿好像断了，看起来很痛苦。请问该怎么办？急！',
+                tags: ['紧急求助', '受伤动物', '急救'],
+                likes: 67,
+                replies: 15,
+                views: 1543,
+                publishTime: '2024-12-17 21:30',
+                lastReply: '2024-12-18 08:20',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '张义工',
+                        avatar: '张',
+                        content: '首先确保自身安全，然后联系当地动物救助机构或110。如果狗狗允许，可以用毯子轻轻包裹送往最近的宠物医院。',
+                        isExpert: true,
+                        time: '2024-12-17 21:45'
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: '领养狗狗后的适应期问题',
+                category: 'adoption',
+                author: '新主人',
+                avatar: '新',
+                content: '上周领养了一只2岁的金毛，但是回家后一直不太吃东西，也很安静。这是正常的吗？需要多久才能适应？',
+                tags: ['领养适应', '狗狗行为', '新环境'],
+                likes: 34,
+                replies: 9,
+                views: 823,
+                publishTime: '2024-12-16 14:15',
+                lastReply: '2024-12-17 10:30',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '王老师',
+                        avatar: '王',
+                        content: '这是正常现象，狗狗需要1-2周适应新环境。给它安静的空间，保持规律的作息和饮食，慢慢会好起来的。',
+                        isExpert: true,
+                        time: '2024-12-16 15:00'
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: '狗狗乱咬东西怎么训练？',
+                category: 'training',
+                author: '烦恼的主人',
+                avatar: '烦',
+                content: '我家小狗4个月大，最近特别喜欢咬家具和鞋子，已经咬坏好几双了。有什么好的训练方法吗？',
+                tags: ['行为训练', '咬东西', '幼犬教育'],
+                likes: 28,
+                replies: 11,
+                views: 645,
+                publishTime: '2024-12-15 11:20',
+                lastReply: '2024-12-16 16:45',
+                isExpert: false,
+                repliesList: [
+                    {
+                        author: '王老师',
+                        avatar: '王',
+                        content: '4个月正是换牙期，咬东西是正常的。提供专用的磨牙玩具，发现咬家具时立即制止并引导到玩具上。',
+                        isExpert: true,
+                        time: '2024-12-15 12:10'
+                    }
+                ]
+            }
+        ];
+        
+        let currentCategory = 'all';
+        let filteredPosts = [...forumPosts];
+        let currentPage = 1;
+        const postsPerPage = 5;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForum();
+            initializeFilters();
+            renderPosts();
+            initializeCounters();
+        });
+        
+        // 初始化论坛
+        function initializeForum() {
+            // 滚动显示效果
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // 初始化筛选器
+        function initializeFilters() {
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    applyFilter();
+                });
+            });
+            
+            document.getElementById('load-more-btn').addEventListener('click', loadMorePosts);
+        }
+        
+        // 应用筛选
+        function applyFilter() {
+            if (currentCategory === 'all') {
+                filteredPosts = [...forumPosts];
+            } else {
+                filteredPosts = forumPosts.filter(post => post.category === currentCategory);
+            }
+            
+            currentPage = 1;
+            renderPosts();
+        }
+        
+        // 渲染帖子
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            const startIndex = 0;
+            const endIndex = currentPage * postsPerPage;
+            const postsToShow = filteredPosts.slice(startIndex, endIndex);
+            
+            container.innerHTML = '';
+            
+            postsToShow.forEach(post => {
+                const postElement = createPostElement(post);
+                container.appendChild(postElement);
+            });
+            
+            // 更新加载更多按钮
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (endIndex >= filteredPosts.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+        
+        // 创建帖子元素
+        function createPostElement(post) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post-card p-6 rounded-2xl cursor-pointer';
+            postDiv.onclick = () => showPostDetail(post);
+            
+            const categoryColors = {
+                rescue: 'bg-red-100 text-red-800',
+                adoption: 'bg-green-100 text-green-800',
+                medical: 'bg-blue-100 text-blue-800',
+                training: 'bg-purple-100 text-purple-800',
+                help: 'bg-yellow-100 text-yellow-800',
+                share: 'bg-orange-100 text-orange-800'
+            };
+            
+            const categoryNames = {
+                rescue: '救助经验',
+                adoption: '领养交流',
+                medical: '医疗问答',
+                training: '行为训练',
+                help: '求助信息',
+                share: '经验分享'
+            };
+            
+            postDiv.innerHTML = `
+                <div class="flex items-start space-x-4">
+                    <div class="user-avatar">${post.avatar}</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="font-medium">${post.author}</span>
+                            ${post.isExpert ? '<span class="expert-badge">专家</span>' : ''}
+                            <span class="text-sm text-gray-500">${post.publishTime}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 hover:text-orange-600 transition-colors">${post.title}</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">${post.content}</p>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="px-3 py-1 rounded-full text-sm ${categoryColors[post.category]}">${categoryNames[post.category]}</span>
+                            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                ${post.tags.map(tag => `<span class="bg-gray-100 px-2 py-1 rounded">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-6 text-sm text-gray-500">
+                                <button class="like-btn flex items-center space-x-1 hover:text-orange-600 transition-colors" onclick="event.stopPropagation(); toggleLike(${post.id})">
+                                    <span>👍</span>
+                                    <span>${post.likes}</span>
+                                </button>
+                                <span>💬 ${post.replies}</span>
+                                <span>👁️ ${post.views}</span>
+                            </div>
+                            <span class="text-sm text-gray-400">最后回复: ${post.lastReply}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return postDiv;
+        }
+        
+        // 加载更多帖子
+        function loadMorePosts() {
+            currentPage++;
+            renderPosts();
+        }
+        
+        // 显示帖子详情
+        function showPostDetail(post) {
+            const modal = document.getElementById('post-detail-modal');
+            const content = document.getElementById('post-detail-content');
+            
+            const categoryNames = {
+                rescue: '救助经验',
+                adoption: '领养交流',
+                medical: '医疗问答',
+                training: '行为训练',
+                help: '求助信息',
+                share: '经验分享'
+            };
+            
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">${post.title}</h3>
+                    <button onclick="hidePostDetail()" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="user-avatar">${post.avatar}</div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium">${post.author}</span>
+                                ${post.isExpert ? '<span class="expert-badge">专家</span>' : ''}
+                            </div>
+                            <span class="text-sm text-gray-500">${post.publishTime}</span>
+                        </div>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>${post.content}</p>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-lg font-bold mb-4">回复 (${post.replies})</h4>
+                    <div class="space-y-4">
+                        ${post.repliesList.map(reply => `
+                            <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                                <div class="user-avatar text-sm">${reply.avatar}</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-medium">${reply.author}</span>
+                                        ${reply.isExpert ? '<span class="expert-badge">专家</span>' : ''}
+                                        <span class="text-sm text-gray-500">${reply.time}</span>
+                                    </div>
+                                    <p class="text-gray-700">${reply.content}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="reply-form mt-6 p-4 rounded-lg">
+                    <h5 class="font-bold mb-3">发表回复</h5>
+                    <textarea rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="分享您的想法..."></textarea>
+                    <div class="flex justify-end mt-3">
+                        <button class="btn-primary text-white px-6 py-2 rounded-lg font-medium" onclick="submitReply(${post.id})">
+                            发表回复
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // 隐藏帖子详情
+        function hidePostDetail() {
+            document.getElementById('post-detail-modal').classList.add('hidden');
+        }
+        
+        // 切换点赞
+        function toggleLike(postId) {
+            const post = forumPosts.find(p => p.id === postId);
+            if (post) {
+                post.likes += 1;
+                // 重新渲染帖子
+                renderPosts();
+            }
+        }
+        
+        // 显示发帖表单
+        function showPostForm(category = '') {
+            document.getElementById('post-form-modal').classList.remove('hidden');
+            if (category) {
+                document.getElementById('post-category').value = category;
+            }
+            anime({
+                targets: '#post-form-modal .bg-white',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutBack'
+            });
+        }
+        
+        // 隐藏发帖表单
+        function hidePostForm() {
+            anime({
+                targets: '#post-form-modal .bg-white',
+                scale: [1, 0.8],
+                opacity: [1, 0],
+                duration: 200,
+                easing: 'easeInBack',
+                complete: function() {
+                    document.getElementById('post-form-modal').classList.add('hidden');
+                }
+            });
+        }
+        
+        // 提交回复
+        function submitReply(postId) {
+            alert('回复发表成功！');
+            hidePostDetail();
+        }
+        
+        // 初始化计数器
+        function initializeCounters() {
+            const counters = [
+                { id: 'total-posts', target: 1280, duration: 2000 },
+                { id: 'active-users', target: 856, duration: 2000 },
+                { id: 'expert-answers', target: 342, duration: 2000 },
+                { id: 'success-stories', target: 89, duration: 2000 }
+            ];
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = counters.find(c => c.id === entry.target.id);
+                        if (counter) {
+                            animateCounter(counter);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => {
+                const element = document.getElementById(counter.id);
+                if (element) {
+                    observer.observe(element);
+                }
+            });
+        }
+        
+        // 数字计数动画
+        function animateCounter(counter) {
+            const element = document.getElementById(counter.id);
+            
+            anime({
+                targets: { count: 0 },
+                count: counter.target,
+                duration: counter.duration,
+                easing: 'easeOutExpo',
+                update: function(anim) {
+                    const value = anim.animatables[0].target.count;
+                    element.textContent = Math.floor(value).toLocaleString();
+                }
+            });
+        }
+        
+        // 表单提交处理
+        document.getElementById('post-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value;
+            const category = document.getElementById('post-category').value;
+            const content = document.getElementById('post-content').value;
+            const tags = document.getElementById('post-tags').value;
+            
+            if (!title || !category || !content) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 创建新帖子
+            const newPost = {
+                id: forumPosts.length + 1,
+                title: title,
+                category: category,
+                author: '当前用户',
+                avatar: '我',
+                content: content,
+                tags: tags ? tags.split(' ') : [],
+                likes: 0,
+                replies: 0,
+                views: 1,
+                publishTime: new Date().toLocaleString('zh-CN'),
+                lastReply: new Date().toLocaleString('zh-CN'),
+                isExpert: false,
+                repliesList: []
+            };
+            
+            // 添加到帖子列表
+            forumPosts.unshift(newPost);
+            
+            alert('帖子发布成功！');
+            hidePostForm();
+            
+            // 重置表单
+            document.getElementById('post-form').reset();
+            
+            // 重新渲染帖子
+            applyFilter();
+        });
+    </script>
+</body>
+</html>
